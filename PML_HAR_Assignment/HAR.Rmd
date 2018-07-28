@@ -1,0 +1,130 @@
+---
+title: "Human Activity Recognition | Practical Machine Learning Project"
+author: "Nishant Gupta"
+date: "Sunday, July 27, 2014"
+output:
+  html_document:
+    theme: spacelab
+    toc: yes
+---
+
+## Introduction
+
+Using devices such as *Jawbone Up*, *Nike FuelBand*, and *Fitbit* it is now possible to collect a large amount of data about personal activity relatively inexpensively.  
+
+These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it.  
+
+In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: [Human Activity Recognition](http://groupware.les.inf.puc-rio.br/har) (see the section on the Weight Lifting Exercise Dataset).  
+  
+  
+
+### Reading the Dataset
+
+Note that in the data set, there are elements like "#DIV/0!", "NA", and Blanks...
+These elements need to be assigned as NAs in the R Data frame
+
+```{r cache = TRUE}
+pmltrain <- read.csv("pml-training.csv", na.strings = c("#DIV/0!", "NA", ""), header = TRUE)
+pmltest <- read.csv("pml-testing.csv", na.strings = c("#DIV/0!", "NA", ""), header = TRUE)
+
+```
+
+
+### Cleaning the Dataset
+
+The first step of cleaning the dataset is to find out how many NAs are there, in each column of training and testing dataset.
+
+```{r results= 'hide'}
+
+str(pmltrain)
+colSums(is.na(pmltrain))
+
+str(pmltest)
+colSums(is.na(pmltest))
+
+```
+
+
+It is observed that out of 160 columns in the dataset, only 60 columns have the data while other columns have most of their values as NAs. To check whether training and testing dataset have the same set of columns that are 'valid', we run the following code.
+
+You would notice that the index numbers of the 'valid' columns are same.
+
+```{r}
+
+which(colSums(is.na(pmltrain)) == 0)
+which(colSums(is.na(pmltest)) == 0)
+
+intersect(which(colSums(is.na(pmltrain)) == 0), which(colSums(is.na(pmltest)) == 0))
+
+```
+
+#### Creating the cleaned Dataset
+
+```{r}
+pmltrain2 <- pmltrain[, which(colSums(is.na(pmltrain)) == 0)]
+pmltest2 <- pmltest[, which(colSums(is.na(pmltest)) == 0)]
+
+str(pmltrain2)
+str(pmltest2)
+
+```
+
+Stripping off some of the columns that are not required in the Model Development. The Following dataset would be used for Model Development and Selection.
+
+```{r}
+pmltrain3 <- pmltrain2[, -c(1:7)]
+pmltest3 <- pmltest2[, -c(1:7)]
+
+str(pmltrain3)
+str(pmltest3)
+```
+
+
+### Splitting the Training Set
+
+The traning dataset is split into training and a new testing dataset... or we can call it a validation dataset.
+
+```{r}
+library(caret)
+
+Indices <- createDataPartition(pmltrain3$classe, p=0.7, list=FALSE)
+pmltrain3_train <- pmltrain3[Indices,]
+pmltrain3_test <- pmltrain3[-Indices,]
+
+```
+
+### Model Development
+
+We are now using random forest classifier to train the training dataset. Note that the Cross Validation has been done simultaneously.
+
+```{r cache = TRUE}
+Modfit1 <- train(classe ~ ., 
+             data=pmltrain3_train,
+             method="rf",
+             trControl=trainControl(method="cv", number=3),
+             verbose=FALSE)
+```
+
+### Out of sample Error Rate
+
+Finding out the Testing Set Accuracy or the Out of Sample Error Rate
+
+```{r}
+predicted <- predict(Modfit1, pmltrain3_test)
+accuracy <- sum(predicted == pmltrain3_test$classe) / length(predicted)
+accuracy
+
+```
+
+As you can see, we have achieved **`r 100*accuracy`%** accuracy on the validation dataset.
+
+
+### Applying the prediction model of the Testing Set (20 Observation)
+
+```{r}
+answer = predict(Modfit1, pmltest3)
+answer
+```
+
+This has been submitted in the separate programming assignment already.
+

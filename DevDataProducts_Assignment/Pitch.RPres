@@ -1,0 +1,52 @@
+IMDB Movies Dataset Insights
+========================================================
+author: Nishant Gupta
+date: August 24, 2014
+
+About the Project
+========================================================
+
+This Shiny Application is an assignment for [Developing Data Products](https://class.coursera.org/devdataprod-004) course, taught by John Hopkins University through Coursera Platform
+
+In this Application:  
+1) I have used __movies__ dataset from __ggplot2__ package of R  
+2) I have set up the application to explore data in this dataset
+
+The **IMDB Movies Dataset Insights** has been deployed **[here](http://imnishantg.shinyapps.io/Dev_Data_Product_Assignment/)**
+
+Snapshot of the Application
+========================================================
+
+Following is the snapshot of the Application **[IMDB Movies Dataset Insights](http://imnishantg.shinyapps.io/Dev_Data_Product_Assignment/)**  
+  
+  
+  
+![Snapshot of the Application](Pitch-figure/snapshot.jpg)
+  
+
+
+About the Data
+========================================================
+
+```{r, echo=FALSE}
+library(ggplot2)
+data(movies)
+```
+
+The dataset has `r ncol(movies)` attributes of `r nrow(movies)` movies that were released between `r min(movies$year)` and `r max(movies$year)`. Out of these `r ncol(movies)` attributes, we chose 5 major parameters, namely *`r colnames(movies[, c(2:6)])`*.
+
+A combination of scatterplot and 2D-density plot is created to study the distribution of movies across thses parameters.
+
+
+Salient Features of the Application
+========================================================
+
+The user can  
+* Choose the attributes for the X-axis and Y-axis  
+* Apply filters on   
+  + Year of the Movie  
+  + Length of the Movie  
+  + No. of Votes garnered by the Movie  
+
+
+

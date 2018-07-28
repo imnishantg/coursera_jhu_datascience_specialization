@@ -1,0 +1,14 @@
+---
+title: "IMDB Movies Dataset Insights"
+author: "Nishant Gupta"
+output:
+  html_document:
+    theme: journal
+---
+
+This Shiny Application is an assignment for [Developing Data Products](https://class.coursera.org/devdataprod-004) course, taught by John Hopkins University through Coursera Platform
+
+In this Application:
+
+> I have used the __movies__ dataset from __ggplot2__ package of R  
+> Set up an application though which one can explore the data in this dataset  
