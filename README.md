@@ -1,4 +1,4 @@
-# coursera_jhu_datascience_specialization
+# Coursera | JHU Data Science Specialization
 Homeworks and Assignments related to JHU Data Science Specialization from Coursera
 
 It contains the following assignments:
